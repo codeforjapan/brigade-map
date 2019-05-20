@@ -22,6 +22,19 @@ const map = new mapboxgl.Map({
   center: [137.498,38.580],
   zoom: 5.0
 });
+// get brigade list
+const brigade_list_url = 'https://script.googleusercontent.com/macros/echo?user_content_key=5dfW5AnaV86AwNchCti8kdyx_arPzD-4iplNG8JV3slviq4RLAYqxp8JyOTEqsdLoa_rUyLOBbuZ2DZYCFZxn43WjAKcLDTdm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnB4hu738C8AHQSKTnHab2ScU7_oL2wHEA_u2RCJHdWxwQxG5cMwPXPo8D-eQKbbN36OIp7sEUsJ2&lib=MLzRnc3HwC_fC06qC5hu5JcjB0FGL_NO4';
+var myJSON = new XMLHttpRequest();
+myJSON.onreadystatechange = function() {
+  if ((myJSON.readyState === 4) && (myJSON.status === 200)) {
+    var data = JSON.parse(myJSON.responseText);
+    //コールバック内容
+    console.log(data);
+  }
+}
+myJSON.open("GET", brigade_list_url, true);
+myJSON.send(null);
+
 </script>
 
 </body>

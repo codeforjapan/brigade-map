@@ -23,18 +23,18 @@ const map = new mapboxgl.Map({
   zoom: 5.0
 });
 // get brigade list
-const brigade_list_url = 'https://script.googleusercontent.com/macros/echo?user_content_key=bG_vBetm0YLoPz6Z0y5BJL50EoIua4ZbtQ8gky2cGyxaWTtDs9OMXevy8z48n1R2muGjHdiUE34PUPnkKP9WE0R8Z3qcpiA-m5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnB4hu738C8AHQSKTnHab2ScU7_oL2wHEA_u2RCJHdWxwQxG5cMwPXPo8D-eQKbbN36OIp7sEUsJ2&lib=MLzRnc3HwC_fC06qC5hu5JcjB0FGL_NO4';
-var myJSON = new XMLHttpRequest();
-myJSON.onreadystatechange = function() {
-  if ((myJSON.readyState === 4) && (myJSON.status === 200)) {
-    var data = JSON.parse(myJSON.responseText);
-    //コールバック内容
-    console.log(data);
-  }
-}
-myJSON.open("GET", brigade_list_url, true);
-myJSON.send(null);
-
+const url = 'https://script.googleusercontent.com/macros/echo?user_content_key=0K8fURJ8Fbiwsj1gWk6siC-OBOyEk4IUeQjcR5LYB87zpZ5a6lTtRO3YaOIgDBcIVdu07xS4-eGtvZQ4Qo0NnqzfQMY0_uPfm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnB4hu738C8AHQSKTnHab2ScU7_oL2wHEA_u2RCJHdWxwQxG5cMwPXPo8D-eQKbbN36OIp7sEUsJ2&lib=MLzRnc3HwC_fC06qC5hu5JcjB0FGL_NO4';
+map.on('load', function () {
+    map.addSource('brigades', { type: 'geojson', data: url });
+    map.addLayer({
+        "id": "brigades",
+        "type": "symbol",
+        "source": "brigades",
+        "layout": {
+            "icon-image": "rocket-15"
+        }
+    });
+});
 </script>
 
 </body>

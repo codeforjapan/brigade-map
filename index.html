@@ -29,6 +29,7 @@ map.on('load', function () {
         type: 'geojson',
         data: url,
         cluster: true,
+        clusterRadius: 10,
         clusterMaxZoom: 14, // Max zoom to cluster points on clusterRadius: 50
         });
     map.addLayer({
@@ -37,20 +38,8 @@ map.on('load', function () {
         source: "brigades",
         filter: ["has", "point_count"],
         "paint": {
-            "circle-color": [
-                "step",
-                ["get", "point_count"],
-                "#51bbd6",
-                10,
-                "#f1f075",
-                ],
-                "circle-radius": [
-                "step",
-                ["get", "point_count"],
-                10,
-                10,
-                20
-                ]
+            "circle-color": "#51bbd6",
+            "circle-radius": 10
         }
     });
     map.addLayer({
@@ -77,6 +66,9 @@ map.on('load', function () {
             "circle-stroke-color": "#fff"
         }
     });
+
+    map.on('mouseenter','clusters',function () { map.getCanvas().style.cursor = 'pointer'; });
+    map.on('mouseleave', 'clusters', function () { map.getCanvas().style.cursor = ''; });
     // inspect a cluster on click
     map.on('click', 'clusters', function (e) {
         var features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });

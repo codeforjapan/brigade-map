@@ -28,10 +28,11 @@ map.on('load', function () {
     map.addSource('brigades', { type: 'geojson', data: url });
     map.addLayer({
         "id": "brigades",
-        "type": "symbol",
+        "type": "circle",
         "source": "brigades",
-        "layout": {
-            "icon-image": "rocket-15"
+        "paint": {
+            "circle-radius": 5,
+            "circle-color": "red"  
         }
     });
 });

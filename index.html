@@ -25,16 +25,73 @@ const map = new mapboxgl.Map({
 // get brigade list
 const url = 'https://script.googleusercontent.com/macros/echo?user_content_key=0K8fURJ8Fbiwsj1gWk6siC-OBOyEk4IUeQjcR5LYB87zpZ5a6lTtRO3YaOIgDBcIVdu07xS4-eGtvZQ4Qo0NnqzfQMY0_uPfm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnB4hu738C8AHQSKTnHab2ScU7_oL2wHEA_u2RCJHdWxwQxG5cMwPXPo8D-eQKbbN36OIp7sEUsJ2&lib=MLzRnc3HwC_fC06qC5hu5JcjB0FGL_NO4';
 map.on('load', function () {
-    map.addSource('brigades', { type: 'geojson', data: url });
+    map.addSource('brigades', {
+        type: 'geojson',
+        data: url,
+        cluster: true,
+        clusterMaxZoom: 14, // Max zoom to cluster points on clusterRadius: 50
+        });
     map.addLayer({
-        "id": "brigades",
-        "type": "circle",
-        "source": "brigades",
+        id: "clusters",
+        type: "circle",
+        source: "brigades",
+        filter: ["has", "point_count"],
         "paint": {
-            "circle-radius": 5,
-            "circle-color": "red"  
+            "circle-color": [
+                "step",
+                ["get", "point_count"],
+                "#51bbd6",
+                10,
+                "#f1f075",
+                ],
+                "circle-radius": [
+                "step",
+                ["get", "point_count"],
+                10,
+                10,
+                20
+                ]
         }
     });
+    map.addLayer({
+        id: "cluster-count",
+        type: "symbol",
+        source: "brigades",
+        filter: ["has", "point_count"],
+        layout: {
+            "text-field": "{point_count_abbreviated}",
+            "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+            "text-size": 12
+        }
+    });
+
+    map.addLayer({
+        id: "unclustered-point",
+        type: "circle",
+        source: "brigades",
+        filter: ["!", ["has", "point_count"]],
+        paint: {
+            "circle-color": "#11b4da",
+            "circle-radius": 5,
+            "circle-stroke-width": 1,
+            "circle-stroke-color": "#fff"
+        }
+    });
+    // inspect a cluster on click
+    map.on('click', 'clusters', function (e) {
+        var features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+        var clusterId = features[0].properties.cluster_id;
+        map.getSource('brigades').getClusterExpansionZoom(clusterId, function (err, zoom) {
+        if (err)
+            return;
+        
+        map.easeTo({
+            center: features[0].geometry.coordinates,
+                zoom: zoom
+            });
+        });
+    });
+
 });
 </script>
 
